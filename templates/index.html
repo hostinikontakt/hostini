@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twoja Strona z Serwerami Discord</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #1f283d;
+            --text-color: #e0e0e0;
+            --accent-color: #5d51d8;
+            --premium-color: #FFD700;
+            --gradient-start: #3f317b;
+            --gradient-end: #1a1a2e;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-bottom: 2px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            margin-left: 25px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease-in-out;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .auth-btn {
+            margin-left: 30px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-btn:hover {
+            background: linear-gradient(45deg, #7b68ee, #5d51d8);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-switcher select {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
+            padding: 8px;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        main h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #5d51d8, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        main p {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 60px;
+        }
+        
+        .flash {
+            padding: 15px;
+            margin: 20px auto;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            max-width: 800px;
+        }
+
+        .success { background-color: #4CAF50; color: white; }
+        .error { background-color: #f44336; color: white; }
+
+        .add-server-form,
+        .premium-section,
+        .tipply-section,
+        .search-section {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 15px;
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        .add-server-form:hover, .premium-section:hover, .tipply-section:hover, .search-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .add-server-form h2, .premium-section h2, .tipply-section h2, .search-section h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .add-server-form label,
+        .add-server-form input,
+        .add-server-form textarea,
+        .premium-section label,
+        .premium-section select {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .add-server-form input,
+        .add-server-form textarea,
+        .search-section input,
+        .premium-section input[type="text"],
+        .premium-section select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            transition: border-color 0.3s;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+        
+        .add-server-form input, .add-server-form textarea { max-width: none; }
+
+        .add-server-form input:focus,
+        .add-server-form textarea:focus,
+        .search-section input:focus,
+        .premium-section input[type="text"]:focus,
+        .premium-section select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .server-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.05) 100%);
+            transition: transform 0.3s;
+            transform: translateX(-100%);
+        }
+
+        .server-card:hover::before {
+            transform: translateX(0%);
+        }
+
+        .premium-card {
+            border: 2px solid transparent;
+            position: relative;
+            z-index: 1;
+            animation: glow-border 2s infinite alternate;
+        }
+
+        @keyframes glow-border {
+            from { box-shadow: 0 0 10px var(--premium-color), 0 0 20px var(--premium-color); }
+            to { box-shadow: 0 0 20px var(--premium-color), 0 0 30px var(--premium-color); }
+        }
+        
+        .server-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .server-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .server-card-header .edit-delete {
+            margin-left: 10px;
+        }
+
+        .edit-delete a, .edit-delete button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .server-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .server-info h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .server-info p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        .server-description {
+            margin-top: 20px;
+            font-size: 15px;
+            flex-grow: 1;
+            color: #c0c0c0;
+        }
+
+        .server-actions {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bump-btn {
+            background: linear-gradient(45deg, #7b68ee, #5d51d8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .bump-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bump-info {
+            font-size: 12px;
+            color: #b0b0b0;
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        .premium-info {
+            font-size: 12px;
+            color: var(--premium-color);
+            margin-bottom: 10px;
+        }
+
+        .activate-premium-btn {
+            background: var(--premium-color);
+            color: #1a1a2e;
+            font-weight: 700;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .activate-premium-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: #e6c500;
+        }
+
+        .donate-btn {
+            background: linear-gradient(45deg, #ff4757, #e63946);
+            color: white;
+            font-weight: 700;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(45deg, #e63946, #d12f3e);
+        }
+        
+        .premium-section select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            cursor: pointer;
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 25px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">TWOJA STRONA</a>
+        </div>
+        <div class="nav-right">
+            <nav class="nav-links">
+                {% if user %}
+                    <a href="{{ url_for('admin_panel') }}">Panel admina</a>
+                {% endif %}
+                <a href="#">Dodaj serwer</a>
+                <a href="#">Premium</a>
+            </nav>
+            <div class="lang-switcher">
+                <select id="language-select">
+                    <option value="pl">Polski</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            {% if user %}
+                <span style="margin-left: 20px;">Witaj, {{ user['username'] }}!</span> <a href="{{ url_for('logout') }}" class="auth-btn">Wyloguj</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="auth-btn">Zaloguj się z Discordem</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1>Odkryj najlepsze serwery Discord!</h1>
+        <p>Przeglądaj tysiące serwerów, dołącz do społeczności i znajdź coś dla siebie.</p>
+
+        <section class="search-section">
+            <h2>Wyszukiwarka serwerów</h2>
+            <form action="{{ url_for('index') }}" method="get">
+                <input type="text" name="query" placeholder="Szukaj serwera po nazwie lub tagach..." value="{{ request.args.get('query', '') }}">
+                <button type="submit" class="auth-btn">Szukaj</button>
+            </form>
+        </section>
+
+        {% if user %}
+            <section class="add-server-form">
+                <h2 style="text-align: center;">Dodaj swój serwer do naszej listy!</h2>
+                <form action="{{ url_for('add_server_by_user') }}" method="post" style="max-width: 600px; margin: auto;">
+                    <label for="server-name">Nazwa serwera:</label>
+                    <input type="text" id="server-name" name="name" required>
+                    
+                    <label for="server-description">Opis serwera:</label>
+                    <textarea id="server-description" name="description" required></textarea>
+                    
+                    <label for="server-invite">Link do zaproszenia na serwer Discord:</label>
+                    <input type="text" id="server-invite" name="discord_invite" 
+                           pattern="https?:\/\/(www\.)?(discord\.gg|discord\.com\/invite)\/[a-zA-Z0-9]+" 
+                           title="Podaj poprawny link do zaproszenia na serwer Discord (np. discord.gg/przyklad)" required>
+                    
+                    <label for="server-tags">Tagi (np. "gry, społeczność, anime"):</label>
+                    <input type="text" id="server-tags" name="tags">
+                    
+                    <button type="submit" class="auth-btn" style="width: 100%;">Dodaj serwer</button>
+                </form>
+            </section>
+        {% endif %}
+        
+        <section class="server-grid">
+            {% for server in servers %}
+                <div class="server-card {% if server.is_premium %}premium-card{% endif %}">
+                    <div class="server-card-header">
+                        <div style="display: flex; align-items: center;">
+                            <img src="{{ server.icon }}" alt="Ikonka serwera" class="server-icon">
+                            <div class="server-info">
+                                <h3>{{ server.name }}</h3>
+                                <p>{{ server.online }} online | {{ server.members }} członków</p>
+                            </div>
+                        </div>
+                        {% if user and user.get('username') == server.added_by %}
+                            <div class="edit-delete">
+                                <a href="#">Edytuj</a>
+                                <form action="{{ url_for('delete_server_by_user', server_id=server.id) }}" method="post" style="display:inline;">
+                                    <button type="submit">Usuń</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <p class="server-description">
+                        {{ server.description }}
+                    </p>
+                    
+                    {% if server.is_premium %}
+                        <div class="premium-info">
+                            PREMIUM: Wygasa {{ server.premium_end_date.strftime('%Y-%m-%d') }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="server-actions">
+                        <span style="color: #b0b0b0;">Tagi: {{ server.tags }}</span>
+                        {% if user %}
+                            <form action="{{ url_for('bump_server', server_id=server.id) }}" method="post" style="display:inline;">
+                                <button type="submit" class="bump-btn">/TOP</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    {% if server.last_bump %}
+                        <div class="bump-info">
+                            Ostatni bump: {{ server.last_bump.strftime('%H:%M %d-%m-%Y') }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </section>
+
+        <section class="premium-section">
+            <h2>Chcesz wyróżnić swój serwer? ✨</h2>
+            <p>Kup premium i zyskaj złote obramowanie z animacją, oraz możliwość używania **`/top`** co 30 minut!</p>
+            {% if user %}
+                <form action="{{ url_for('activate_premium') }}" method="post">
+                    <label for="code_input">Wprowadź kod premium:</label>
+                    <input type="text" id="code_input" name="code" placeholder="KOD_PREMIUM" required>
+                    
+                    {% if user_servers %}
+                        <label for="server_select">Wybierz swój serwer:</label>
+                        <select id="server_select" name="server_id" required>
+                            <option value="" disabled selected>-- Wybierz serwer --</option>
+                            {% for server in user_servers %}
+                                <option value="{{ server.id }}">{{ server.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="activate-premium-btn">Aktywuj kod premium</button>
+                    {% else %}
+                        <p style="color: #ff9800;">Musisz dodać serwer, aby móc aktywować kod premium.</p>
+                    {% endif %}
+                </form>
+            {% else %}
+                <p>Musisz się zalogować, aby aktywować kod premium.</p>
+            {% endif %}
+        </section>
+
+        <section class="tipply-section">
+            <h2>Wesprzyj nasz projekt! ❤️</h2>
+            <p>{{ tipply_message }}</p>
+            <a href="https://tipply.pl/u/twoja_nazwa" target="_blank" class="donate-btn">Wesprzyj nas na Tipply</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Twoja Strona. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+</body>
+</html>

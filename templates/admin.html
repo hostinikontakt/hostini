@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administracyjny</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --card-bg: #1f283d;
+            --text-color: #e0e0e0;
+            --accent-color: #5d51d8;
+            --premium-color: #FFD700;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h1, h2 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 { font-size: 36px; }
+        h2 { font-size: 24px; }
+
+        form {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: #2a334d;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            background-color: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+        }
+
+        input[type="submit"] {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #7b68ee;
+            transform: translateY(-2px);
+        }
+
+        .flash {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .success { background-color: #4CAF50; color: white; }
+        .error { background-color: #f44336; color: white; }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #2a334d;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent-color);
+            white-space: pre-wrap;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #7b68ee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Panel Administracyjny</h1>
+        <p><a href="{{ url_for('index') }}">Powrót do strony głównej</a></p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <h2>Dodaj nowy serwer (ADMIN)</h2>
+        <form action="{{ url_for('add_server') }}" method="post">
+            <label for="name">Nazwa serwera:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="description">Opis:</label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="tags">Tagi (oddzielone przecinkami):</label>
+            <input type="text" id="tags" name="tags">
+            <input type="submit" value="Dodaj serwer">
+        </form>
+
+        <h2>Generuj kod premium</h2>
+        <form action="{{ url_for('add_code') }}" method="post">
+            <label for="code_value">Kod:</label>
+            <input type="text" id="code_value" name="code_value" required>
+            <input type="submit" value="Generuj kod">
+        </form>
+
+        <h2>Lista serwerów</h2>
+        <ul>
+            {% for server in servers %}
+                <li>
+                    <strong>{{ server.name }}</strong> (ID: {{ server.id }})<br>
+                    Dodano przez: {{ server.added_by }} <br>
+                    Premium: {{ "Tak" if server.is_premium else "Nie" }}
+                    {% if server.is_premium %}
+                        - Wygasa: {{ server.premium_end_date.strftime('%Y-%m-%d') }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Dostępne kody premium</h2>
+        <ul>
+            {% for code in premium_codes %}
+                <li>{{ code.code }} - Status: {{ "Użyty na serwerze " + code.server_id if code.server_id else "Wolny" }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Logi aktywności</h2>
+        <ul>
+            {% for log in logi %}
+                <li>{{ log.message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
